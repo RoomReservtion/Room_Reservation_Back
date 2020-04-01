@@ -1,0 +1,13 @@
+const sgMail = require('@sendgrid/mail');
+const config = require('../../../config/env.config');
+
+exports.sendEmail = (templateId, to, subject, text, data) => {
+  sgMail.setApiKey(config.sendgrip_key);
+  const msg = {
+    to,
+    from: 'contato@plicksolucoes.com.br',
+    dynamic_template_data: data,
+    template_id: templateId
+  };
+  return sgMail.send(msg);
+};

@@ -1,0 +1,153 @@
+const HttpStatus = require('http-status-codes');
+const uuid = require('uuid');
+const emailService = require('../common/email.service');
+const config = require('../../../config/front');
+
+module.exports = ({db}) => {
+  function getFileTypeInfo(clientFileType) {
+    return db.client_file_type.findAll({
+      where: {id: clientFileType},
+      include: [{
+        association: 'FileTypeInformation'
+      }]
+    }).then((result) => {
+      const files = result.map((r) => r.FileTypeInformation);
+      return files[0];
+    });
+  }
+
+  const filesController = {
+    countFilesByClientStatus(clientStatus, officeId, year, month) {
+      let whereClause = {};
+      if (year && year !== '') {
+        whereClause.referenceYear = parseInt(year);
+      }
+      if (month && month !== '') {
+        whereClause.referenceMonth = parseInt(month);
+      }
+
+      let clientWhere = {status: clientStatus};
+      if (officeId !== '06a0563a-01e1-4d9a-a842-2876ddb36087') {
+        clientWhere.officeId = officeId;
+      }
+      return db.client.findAll({
+        where: clientWhere,
+        include: [
+          {
+            association: 'ClientFileTypes',
+            where: {fileTypeId: {[db.Sequelize.Op.ne]: '25028b6e-e6bc-11e9-a359-2a2ae2dbcce4'}},
+            include: [
+              {
+                association: 'Files',
+                where: whereClause,
+                attributes: [[db.sequelize.fn('COUNT', db.sequelize.col('file_status')), 'count'], 'file_status']
+              }],
+          }],
+        group: ['ClientFileTypes->Files.file_status']
+      }).then((res) => {
+        let response = [];
+        for (let client of res) {
+          client.ClientFileTypes.forEach((file) => {
+            const found = response.find((r) => r.file_status === file.Files[0].dataValues.file_status);
+            if (found) {
+              found.count += file.Files[0].dataValues.count;
+            } else {
+              response.push(file.Files[0].dataValues);
+            }
+          });
+        }
+        return response;
+      });
+    },
+    async createFile(cftId, req) {
+      const fileTypeInfo = await getFileTypeInfo(cftId);
+      const file = req.body;
+      file.id = uuid.v4();
+      file.clientFileTypeId = cftId;
+      file.fileStatus = fileTypeInfo.name === 'Transformado' ? 'Pronto' : 'Processando';
+      file.uploadedAt = new Date();
+      file.resulting_url = null;
+      await db.file.create(file);
+      return file.id;
+    },
+    async addDescription(fileId, description, userId) {
+      const fileDescription = {fileId, description, userId};
+      fileDescription.id = uuid.v4();
+      await db.file_description.create(fileDescription);
+      return fileDescription.id;
+    },
+    async getDescriptions(fileId) {
+      return db.file_description.findAll({
+        where: {fileId},
+        include: [
+          {
+            association: 'UserInformation'
+          }],
+        order: ['createdAt']
+      });
+    },
+    async updateFile(profileId, fileId, fileStatus, isInternCall = false, user = false) {
+      let file = await db.file.findOne(
+        {
+          where: {id: fileId},
+          include: [{
+            association: 'ClientFileType',
+            include: [{
+              association: 'ClientInformation',
+            }, {
+              association: 'FileTypeInformation'
+            }]
+          }]
+        });
+      if (file) {
+        await sendChangeStatusEmail(file, fileStatus, db);
+        return db.file.update({fileStatus}, {where: {id: fileId}});
+      }
+      return Promise.reject({code: HttpStatus.BAD_REQUEST, message: 'File does not exist'});
+    },
+    async deleteFile(fileId) {
+      let file = await db.file.findOne({where: {id: fileId}});
+      if (file) {
+        return db.file.destroy({where: {id: fileId}});
+      }
+      return Promise.reject({code: HttpStatus.BAD_REQUEST, message: 'File does not exist'});
+    }
+  };
+
+  return filesController;
+};
+
+async function sendChangeStatusEmail(file, newStatus, db) {
+  const data = {};
+  if (file) {
+    const users = await db.user.findAll(
+      {
+        where: {
+          officeId: file.ClientFileType && file.ClientFileType.ClientInformation &&
+            file.ClientFileType.ClientInformation.officeId
+        }
+      });
+
+    data.fileName = file.name;
+    data.oldFileStatus = file.fileStatus;
+    data.newFileStatus = newStatus;
+    data.client = file.ClientFileType && file.ClientFileType.ClientInformation &&
+      file.ClientFileType.ClientInformation.socialReason;
+    data.fileType = file.ClientFileType && file.ClientFileType.FileTypeInformation &&
+      file.ClientFileType.FileTypeInformation.name;
+    data.referenceDate = `${`0${file.referenceMonth}`.slice(-2)}/${file.referenceYear}`;
+    data.url = config.production;
+
+
+    const promises = [];
+    for (const user of users) {
+      data.name = user.name;
+      emailService.sendEmail('d-0de18972cc4e4bccb2e14194a00ce6e1',
+        user.email,
+        'Mudança de status',
+        'Mudança de status', data);
+    }
+    return Promise.all(promises);
+  }
+  return null;
+}
