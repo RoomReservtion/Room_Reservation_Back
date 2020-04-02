@@ -1,7 +1,7 @@
 module.exports = ({ db }) => {
   const userController = {
       async get(req, res) {
-        return await db.users.findAll({
+        return db.users.findAll({
           include: [
             { association: 'Reservations' },
           ],     
@@ -10,7 +10,7 @@ module.exports = ({ db }) => {
         let name = req.params.name;
         return await db.users.find({
           include: [
-            { association: 'Reservations' },
+            { association: 'Reservation' },
           ],     
           where:{name}
         })

@@ -1,10 +1,11 @@
 module.exports = {
   local: {
-    username: 'batatinha',
-    password: 'Bananinha123',
+    user: 'admin',
+    password: 'p3p3p3',
     database: 'rooms',
-    host: 'room.database.windows.net',
+    schema: 'room_reservation',
+    server: 'localhost',
     port: 1433,
-    dialect: 'mysql'
+    dialect: 'mssql'
   }
 };

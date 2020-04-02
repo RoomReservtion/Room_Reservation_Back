@@ -5,11 +5,11 @@ module.exports = (sequelize, DataTypes) => {
     UserID: {
       type: DataTypes.STRING,
       field: 'user_id',
+      primaryKey: true
     },
     Name: {
       type: DataTypes.STRING,
       field: 'name',
-      primaryKey: true
     },
     Contact: {
       type: DataTypes.STRING,
@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
 
   const userClassMethods = {
     associate(models) {
-      User.hasMany(models.reservations, {
+      User.hasMany(models.reservation, {
         foreignKey: 'UserID',
         sourceKey: 'UserID',
         as: 'Reservations',

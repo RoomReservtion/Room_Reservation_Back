@@ -37,14 +37,6 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.BOOLEAN,
       field: `Large_LED_Display`
     },
-    Projector:{
-      type: DataTypes.BOOLEAN,
-      field: `projector`
-    },
-    SoundTable:{
-      type: DataTypes.BOOLEAN,
-      field: `soundtable`
-    },
     Speakers:{
       type: DataTypes.BOOLEAN,
       field: `speakers`
