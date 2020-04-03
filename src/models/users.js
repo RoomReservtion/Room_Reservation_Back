@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
 
   const userClassMethods = {
     associate(models) {
-      User.hasMany(models.reservation, {
+      User.hasMany(models.reservations, {
         foreignKey: 'UserID',
         sourceKey: 'UserID',
         as: 'Reservations',

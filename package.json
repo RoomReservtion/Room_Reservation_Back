@@ -6,6 +6,7 @@
   "dependencies": {
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
+    "cross-env": "^7.0.2",
     "express": "^4.17.1",
     "http-status-codes": "^1.3.2",
     "jsonschema": "^1.2.5",
@@ -20,7 +21,11 @@
     "eslint": "^5.16.0"
   },
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "migrate-local": "cross-env NODE_ENV=local sequelize db:migrate",
+    "migrate-local:undo": "cross-env NODE_ENV=local sequelize db:migrate:undo",
+    "migrate-local:undo:all": "cross-env NODE_ENV=local sequelize db:migrate:undo:all",
+    "seeder-local": "sequelize db:seed:all --debug"
   },
   "author": "guilhermeditzel",
   "license": "ISC"

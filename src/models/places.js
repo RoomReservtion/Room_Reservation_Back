@@ -3,7 +3,7 @@ module.exports = (sequelize, DataTypes) => {
   const Place = sequelize.define('places', {
     PlaceID: {
       type: DataTypes.STRING,
-      field: 'account_id',
+      field: 'place_id',
       primaryKey: true
     },
     Name: {
