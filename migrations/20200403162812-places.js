@@ -5,9 +5,8 @@ module.exports = {
         return queryInterface.createTable(TABLE_NAME, {
             place_id: {
                 allowNull: false,
-                autoIncrement: true,
                 primaryKey: true,
-                type: Sequelize.INTEGER,
+                type: Sequelize.STRING,
             },
             name: {
                 allowNull: false,
@@ -15,7 +14,7 @@ module.exports = {
             },
             type: {
                 allowNull: false,
-                type: Sequelize.STRING,
+                type: Sequelize.ENUM('hotel', 'sala de conferências', 'coworking'),
             },
             address: {
                 allowNull: false,
@@ -26,12 +25,12 @@ module.exports = {
                 allowNull: false,
                 type: Sequelize.STRING,
             },
-            createdAt: {
+            created_at: {
                 allowNull: false,
                 type: Sequelize.DATE,
                 defaultValue: new Date(),
             },
-            updatedAt: {
+            updated_at: {
                 allowNull: false,
                 type: Sequelize.DATE,
                 defaultValue: new Date(),

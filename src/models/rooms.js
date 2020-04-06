@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
       field: 'name',
     },
     Seats:{
-      type: DataTypes.STRING,
+      type: DataTypes.INTEGER,
       field: 'seats',
     },
     TV:{
@@ -31,11 +31,11 @@ module.exports = (sequelize, DataTypes) => {
     },
     Screen_Projection:{
       type: DataTypes.BOOLEAN,
-      field: `Screen_Projection`
+      field: `screen_projection`
     },
     Large_LED_Display:{
       type: DataTypes.BOOLEAN,
-      field: `Large_LED_Display`
+      field: `large_led_display`
     },
     Speakers:{
       type: DataTypes.BOOLEAN,

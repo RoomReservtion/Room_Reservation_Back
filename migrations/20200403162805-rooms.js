@@ -5,13 +5,12 @@ module.exports = {
         return queryInterface.createTable(TABLE_NAME, {
             place_id: {
                 allowNull: false,
-                type: Sequelize.INTEGER,
+                type: Sequelize.STRING,
             },
             room_id: {
                 allowNull: false,
-                autoIncrement: true,
                 primaryKey: true,
-                type: Sequelize.INTEGER,
+                type: Sequelize.STRING,
             },
             name: {
                 allowNull: false,
@@ -45,6 +44,10 @@ module.exports = {
                 allowNull: false,
                 type: Sequelize.BOOLEAN,
             },
+            screen_projection:  {
+                allowNull: false,
+                type: Sequelize.BOOLEAN,
+            },
             sound_operator: {
                 allowNull: false,
                 type: Sequelize.BOOLEAN,
@@ -61,12 +64,12 @@ module.exports = {
                 allowNull: false,
                 type: Sequelize.BOOLEAN,
             },
-            createdAt: {
+            created_at: {
                 allowNull: false,
                 type: Sequelize.DATE,
                 defaultValue: new Date(),
             },
-            updatedAt: {
+            updated_at: {
                 allowNull: false,
                 type: Sequelize.DATE,
                 defaultValue: new Date(),

@@ -5,9 +5,8 @@ module.exports = {
         const usertable =  queryInterface.createTable(TABLE_NAME, {
             user_id: {
                 allowNull: false,
-                autoIncrement: true,
                 primaryKey: true,
-                type: Sequelize.INTEGER,
+                type: Sequelize.STRING,
             },
             name: {
                 allowNull: false,
@@ -22,12 +21,12 @@ module.exports = {
                 allowNull: false,
                 type: Sequelize.STRING,
             },
-            createdAt: {
+            created_at: {
                 allowNull: false,
                 type: Sequelize.DATE,
                 defaultValue: new Date(),
             },
-            updatedAt: {
+            updated_at: {
                 allowNull: false,
                 type: Sequelize.DATE,
                 defaultValue: new Date(),

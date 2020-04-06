@@ -22,10 +22,11 @@
   },
   "scripts": {
     "start": "node index.js",
+    "initial-setup": "cross-env NODE_ENV=local sequelize db:migrate && cross-env NODE_ENV=local sequelize db:seed:all --debug",
     "migrate-local": "cross-env NODE_ENV=local sequelize db:migrate",
     "migrate-local:undo": "cross-env NODE_ENV=local sequelize db:migrate:undo",
     "migrate-local:undo:all": "cross-env NODE_ENV=local sequelize db:migrate:undo:all",
-    "seeder-local": "sequelize db:seed:all --debug"
+    "seeder-local": "cross-env NODE_ENV=local sequelize db:seed:all --debug"
   },
   "author": "guilhermeditzel",
   "license": "ISC"

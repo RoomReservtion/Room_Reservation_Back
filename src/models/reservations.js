@@ -1,32 +1,32 @@
 module.exports = (sequelize, DataTypes) => {
   const Reservation = sequelize.define('reservations', {
     ReservationID: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
       field: 'reservation_id',
       primaryKey: true
     },
     UserID: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
       field: 'user_id',
     },
     PlaceID: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
       field: 'place_id',
     },
     RoomID: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
       field: 'room_id',
     },
     ReservationDate: {
-      type: DataTypes.STRING,
+      type: DataTypes.DATE,
       field: 'reservation_date',
     },
     StartPeriod: {
-      type: DataTypes.STRING,
+      type: DataTypes.INTEGER,
       field: 'start_period',
     },
     EndPeriod: {
-      type: DataTypes.STRING,
+      type: DataTypes.INTEGER,
       field: 'end_period',
     },
     TotalCost: {
